@@ -4,29 +4,29 @@ use std::collections::HashMap;
 
 fn main() {
     let mut rng = rand::thread_rng();
-    let mut res = String::new();
+    let mut res = Vec::new();
         
-    let symbols: [char; 4] = ['1','2','3','4'];
+    let lib: [u8; 4] = [41, 21, 1, 4];
 
-    println!("gen line... ");
+    println!("gen array... ");
 
     for _ in 0..1_000_000_000 {
         let i: usize = rng.gen();
-        res.push(symbols[i % 4]);
+        res.push(lib[i % 4]);
     }
 
     println!("counting stats... ");
 
-    let mut stats: HashMap<char, u32> = HashMap::new();
+    let mut stats: HashMap<u8, u32> = HashMap::new();
 
-    for sym in res.chars() {
-        stats.entry(sym)
+    for val in res.iter() {
+        stats.entry(*val)
             .and_modify(|count| *count += 1)
             .or_insert(1);
     }
 
     for (key, value) in stats {
-        println!("char: {} occurs {} times", key, value);
+        println!("item {} occurs {} times", key, value);
     }
 
 

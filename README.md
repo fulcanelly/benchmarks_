@@ -10,7 +10,7 @@ List of benchmarks to test languages
 Currently only one kind of benchmark avaliable:
 
 
-Generating string of `1_000_000_000` (~1GB) size from random characters of predefined 4-sized list
-And then counting how often wich character appears in string 
+Generating list/array of `1_000_000_000` (~1GB) size from random 4 predefined bytes set
+And then counting how much each character appears in string 
 
 

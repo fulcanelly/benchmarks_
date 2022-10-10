@@ -1,0 +1,5 @@
+**/target
+*.lock
+*.class
+*.o
+*.out

@@ -140,7 +140,7 @@ auto count_in_parts(
 
     //this line is super important
     //if remove it everything will break
-    // why ? reяlocations on push back...
+    // why ? relocations on push back...
     stats_lists.reserve(avaliable_threads);
 
     cout << "Init parts.." << endl;

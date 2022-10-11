@@ -1,12 +1,15 @@
+CC = clang++
+
 main: main.o
-	g++ $< -o $@
+	$(CC) $< -o $@
+
 
 
 main.o: main.cc
-	g++ main.cc -c -O2 
+	$(CC) main.cc -c -O2 -pthread
 
 profile: main.cc
-	g++ main.cc -O2 -pg -g
+	$(CC) main.cc -O2 -pg -g -fsanitize=address   
  
 clean:
 	rm *.o main *.out

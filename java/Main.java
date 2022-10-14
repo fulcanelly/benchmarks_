@@ -10,7 +10,7 @@ public class Main {
 
     static int cores = Runtime.getRuntime().availableProcessors();
 
-    static int size = 1000 * 1000 * 1000;
+    static int size = 1 + 1000 * 1000 * 1000;
 
     void generateChunk(int from, int to, byte[] arr) {
         var random = ThreadLocalRandom.current();
@@ -69,7 +69,7 @@ public class Main {
     void parallelTest() {
         byte[] arr = new byte[size];
 
-        var chunkSize = size / cores;
+        var chunkSize = (int)Math.ceil((double)size / cores);
 
         for (int i = 0; i < size; i += chunkSize) {
             var from = i;

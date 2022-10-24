@@ -4,6 +4,7 @@
 #include <thread>
 #include <functional>
 #include <unistd.h>
+#include <random>
 
 using std::string;
 using std::cout;
@@ -15,24 +16,17 @@ using std::vector;
 //changelog:
 // * get rid of std rand
 // * add threading 
-
+// * again using std rand but mt19937
 //todo
 // * redo threading
 
+
 unsigned long myrand() {          
-    static thread_local unsigned long x=123456789, y=362436069, z=521288629;
+    thread_local std::random_device seeder;
+    thread_local std::mt19937 engine(seeder());
+    thread_local std::uniform_int_distribution<int> dist(0, 100);
 
-    unsigned long t;
-    x ^= x << 16;
-    x ^= x >> 5;
-    x ^= x << 1;
-
-    t = x;
-    x = y;
-    y = z;
-    z = t ^ x ^ y;
-
-  return z;
+    return dist(engine);
 }
 
 

@@ -22,11 +22,8 @@ using std::vector;
 
 
 unsigned long myrand() {          
-    thread_local std::random_device seeder;
-    thread_local std::mt19937 engine(seeder());
-    thread_local std::uniform_int_distribution<int> dist(0, 100);
-
-    return dist(engine);
+    thread_local std::mt19937_64 engine(100);
+    return engine();
 }
 
 
@@ -126,7 +123,7 @@ auto do_job(
             fill_chunk(array, range, gen);
             count_chunk_occurances(array, range, result);
         };
-        
+
         threads.push_back(
             std::thread(
                 proc,

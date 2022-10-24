@@ -51,14 +51,12 @@ void print_result(const map<T, int> stats) {
 
 }
 
-
-
 void fill_chunk(
     vector<char>& array, 
     std::pair<int, int> range,
     const std::function<char()>& gen
 ) {
-    cout << "starting " << range.first << " to " << range.second << endl; 
+    cout << "starting F " << range.first << " to " << range.second << endl; 
     
     for (size_t i = range.first; i < range.second; i++) {
         array[i] = gen();
@@ -66,38 +64,7 @@ void fill_chunk(
     }
     
     cout << "ednging " << range.first << " to " << range.second << endl; 
-
 }
-
-static auto avaliable_threads = std::thread::hardware_concurrency();
-
-auto fill_in_parts(
-    vector<char>& array, 
-    const std::function<char()>& gen
-) -> void {
-
-    auto chunk_size = array.size() / avaliable_threads; 
-
-    vector<std::thread> threads;
-    
-    for (size_t i = 0; i < array.size(); i += chunk_size) {
-        threads.push_back(
-            std::thread{ 
-                fill_chunk,
-                std::ref(array), 
-                std::pair<int, int>{ i, i + chunk_size }, 
-                gen 
-            }
-        );
-    }
-
-    for (auto&& thr : threads) {
-        thr.join();
-    }
-    
-    
-}
-
 
 template<class T, class C>
 auto merge_count_maps(
@@ -118,13 +85,21 @@ auto count_chunk_occurances(
     std::pair<int, int> range,
     map<char, int>& result
 ) {
+    cout << "starting C " << range.first << " to " << range.second << endl; 
+
     for (size_t i = range.first; i < range.second; i++) {
         result[array[i]]++;
     }
+    cout << "ednging " << range.first << " to " << range.second << endl; 
+
 }
 
-auto count_in_parts(
-    vector<char>& array
+static auto avaliable_threads = std::thread::hardware_concurrency();
+
+
+auto do_job(
+    vector<char>& array,
+    const std::function<char()>& gen
 ) -> map<char, int> {
     vector< map<char, int> > stats_lists = {};
     vector< std::thread > threads;
@@ -144,9 +119,18 @@ auto count_in_parts(
 
         threads.push_back(
             std::thread(
-                count_chunk_occurances,
+                [] (
+                    vector<char>& array, 
+                    std::pair<int, int> range,  
+                    const std::function<char()>& gen,
+                    map<char, int>& result
+                ) {
+                    fill_chunk(array, range, gen);
+                    count_chunk_occurances(array, range, result);
+                },
                 std::ref(array),
                 std::pair<int, int>{ i, i + chunk_size }, 
+                gen,
                 std::ref(stats_lists.back())
             )
         );
@@ -184,12 +168,7 @@ void run() {
         return lib[myrand() % 4];
     };
 
-    fill_in_parts(list, gen);
-
-
-    cout << "Counting..." << endl;
-
-    auto result = count_in_parts(list);
+    auto result = do_job(list, gen);
 
     cout << "Result:" << endl;
     print_result(result);

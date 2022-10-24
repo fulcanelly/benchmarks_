@@ -181,11 +181,8 @@ void run() {
 
     auto size = 1000 * 1000 * 1000;
     
-    auto data = new char[size];
-    vector<char> list = vector<char>(
-        data, data + size
-    ); 
-    delete [] data;
+    vector<char> list = vector<char>(); 
+    list.resize(size);
 
     cout << "Generating list..." << endl;
 

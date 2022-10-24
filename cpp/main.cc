@@ -117,17 +117,19 @@ auto do_job(
     for (size_t i = 0; i < array.size(); i += chunk_size) {
         stats_lists.push_back({});
 
+        auto proc = [] (
+            vector<char>& array, 
+            std::pair<int, int> range,  
+            const std::function<char()>& gen,
+            map<char, int>& result
+        ) {
+            fill_chunk(array, range, gen);
+            count_chunk_occurances(array, range, result);
+        };
+        
         threads.push_back(
             std::thread(
-                [] (
-                    vector<char>& array, 
-                    std::pair<int, int> range,  
-                    const std::function<char()>& gen,
-                    map<char, int>& result
-                ) {
-                    fill_chunk(array, range, gen);
-                    count_chunk_occurances(array, range, result);
-                },
+                proc,
                 std::ref(array),
                 std::pair<int, int>{ i, i + chunk_size }, 
                 gen,
